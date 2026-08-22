@@ -2,11 +2,8 @@ name: Build LowBrowser Mobile APK
 
 on:
   push:
-    paths:
-      - 'mobile/**'
-      - '.github/workflows/build-apk.yml'
-    tags:
-      - 'v*'
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
