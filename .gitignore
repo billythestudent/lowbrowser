@@ -1,4 +1,12 @@
 node_modules/
 dist/
+index.html
+main.js
+preload.js
+renderer.js
+style.css
+build.js
+logo.png
+task.md
 .DS_Store
 *.log
