@@ -217,38 +217,11 @@ function navigate(url) {
     }
   }
 
-  const tab = tabs.find(t => t.id === activeTabId);
-  if (!tab) return;
+  // Save to History
+  addToHistory(target, target, false);
 
-  tab.url = target;
-  tab.title = target;
-
-  if (!tab.frameEl) {
-    const frame = document.createElement('iframe');
-    frame.className = 'mobile-webview-frame';
-    frame.setAttribute('id', `frame_${tab.id}`);
-    frame.setAttribute('src', target);
-    frame.setAttribute('allow', 'fullscreen; camera; microphone');
-    viewsContainer.appendChild(frame);
-    tab.frameEl = frame;
-    setupFrameEvents(frame, tab.id);
-
-    startPage.classList.add('hidden');
-    frame.classList.remove('hidden');
-  } else {
-    tab.frameEl.setAttribute('src', target);
-  }
-
-  addressInput.value = target;
-  suggestionsBox.classList.add('hidden');
-  btnClearOmnibox.classList.remove('hidden');
-
-  // Trigger progress bar
-  animateProgressBar();
-
-  // Add to History
-  addToHistory(target, target, tab.isPrivate);
-  updateNavButtons();
+  // Directly navigate the Android WebView (Bypasses ERR_BLOCKED_BY_RESPONSE / iframe blocks!)
+  window.location.href = target;
 }
 
 function animateProgressBar() {

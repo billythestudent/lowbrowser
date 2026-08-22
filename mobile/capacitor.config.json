@@ -9,6 +9,9 @@
     "webContentsDebuggingEnabled": false
   },
   "server": {
-    "androidScheme": "https"
+    "androidScheme": "https",
+    "allowNavigation": [
+      "*"
+    ]
   }
 }
