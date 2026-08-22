@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">LowBrowser</string>
+    <string name="title_activity_main">LowBrowser</string>
+    <string name="package_name">com.billythestudent.lowbrowser</string>
+    <string name="custom_url_scheme">com.billythestudent.lowbrowser</string>
+</resources>

@@ -1,0 +1,15 @@
+{
+  "appId": "com.billythestudent.lowbrowser",
+  "appName": "LowBrowser",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#000000",
+  "android": {
+    "allowMixedContent": true,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}

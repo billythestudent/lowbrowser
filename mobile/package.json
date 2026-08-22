@@ -1,0 +1,19 @@
+{
+  "name": "lowbrowser-mobile",
+  "version": "1.0.0",
+  "description": "Ultra-lightweight, standalone native mobile browser for Android and iOS",
+  "main": "app.js",
+  "scripts": {
+    "cap:add:android": "npx cap add android",
+    "cap:sync": "npx cap sync android",
+    "cap:open:android": "npx cap open android",
+    "build:apk": "npx cap sync android && cd android && gradlew assembleRelease"
+  },
+  "author": "billythestudent",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  }
+}

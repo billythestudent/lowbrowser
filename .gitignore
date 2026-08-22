@@ -10,3 +10,8 @@ logo.png
 task.md
 .DS_Store
 *.log
+mobile/node_modules/
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/app/build/
+LowBrowser.apk
