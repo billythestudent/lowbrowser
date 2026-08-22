@@ -1,6 +1,6 @@
 {
   "name": "low-browser",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Ultra-lightweight, smart memory-managed custom web browser",
   "author": "billythestudent",
   "repository": {
@@ -28,11 +28,12 @@
       "releaseType": "release"
     },
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "win": {
       "target": "nsis",
-      "icon": "icon.ico"
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -42,8 +43,8 @@
       "runAfterFinish": true,
       "differentialPackage": false,
       "artifactName": "LowBrowser-Setup.exe",
-      "installerIcon": "icon.ico",
-      "uninstallerIcon": "icon.ico"
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
     }
   }
 }
