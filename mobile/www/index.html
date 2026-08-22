@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>LowBrowser Mobile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-amoled">
+
+  <!-- ==========================================
+       1. TOP MOBILE HEADER & OMNIBOX
+       ========================================== -->
+  <header id="mobile-header">
+    <div id="omnibox-wrapper">
+      <div id="ssl-badge">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z" fill="currentColor"/></svg>
+      </div>
+      <input type="text" id="mobile-address-input" placeholder="Arama yapın veya adres girin..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" enterkeyhint="go">
+      <button id="btn-clear-omnibox" class="omnibox-action-btn hidden" title="Temizle">✕</button>
+      <button id="btn-reload-page" class="omnibox-action-btn" title="Yenile">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <!-- Progress loading bar -->
+    <div id="mobile-progress-bar"></div>
+
+    <!-- Live Google Autocomplete Suggestions Dropdown -->
+    <div id="mobile-suggestions" class="hidden"></div>
+  </header>
+
+  <!-- ==========================================
+       2. MAIN CONTENT & TABS VIEW CONTAINER
+       ========================================== -->
+  <main id="mobile-main">
+    
+    <!-- START / NEW TAB PAGE -->
+    <div id="mobile-start-page">
+      <div class="start-logo-wrap">
+        <img src="logo.png" alt="LowBrowser Mobile" id="mobile-logo">
+        <h2>LowBrowser</h2>
+        <span class="version-tag">Mobile Edition</span>
+      </div>
+
+      <!-- Quick Search Box on Start Page -->
+      <div id="start-search-box">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+        <input type="text" id="start-search-input" placeholder="Google'da Arayın...">
+      </div>
+
+      <!-- Mobile Speed Dials Grid -->
+      <div class="section-title">Hızlı Erişim</div>
+      <div id="mobile-speed-dials"></div>
+
+      <!-- Mobile Security Status Banner -->
+      <div id="mobile-shield-banner">
+        <div class="shield-badge">
+          <span class="shield-dot"></span>
+          <span>🛡️ Mobil Reklam & Takipçi Engelleyici Aktif</span>
+        </div>
+        <div class="shield-stats">
+          <span>Engellenen: <strong id="stat-ads-count">0</strong> reklam</span>
+          <span>Tasarruf: <strong id="stat-saved-data">0.0 MB</strong> kota</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Webviews / Iframes Container -->
+    <div id="mobile-views-container"></div>
+  </main>
+
+  <!-- ==========================================
+       3. CHROME-STYLE TAB GRID SWITCHER MODAL
+       ========================================== -->
+  <div id="tab-switcher-modal" class="hidden">
+    <div class="tab-switcher-header">
+      <div class="tab-switcher-actions">
+        <button id="btn-new-tab-modal" class="btn-modal-pill">
+          <span>+ Normal Sekme</span>
+        </button>
+        <button id="btn-new-private-modal" class="btn-modal-pill private-pill">
+          <span>🕵️ Gizli Sekme</span>
+        </button>
+      </div>
+      <button id="btn-close-tab-switcher" class="btn-done">Bitti</button>
+    </div>
+
+    <!-- Cards Grid -->
+    <div id="tab-cards-grid"></div>
+  </div>
+
+  <!-- ==========================================
+       4. MOBILE ACTION MENU (Bottom Sheet)
+       ========================================== -->
+  <div id="menu-overlay" class="hidden">
+    <div id="menu-sheet">
+      <div class="sheet-handle"></div>
+      
+      <div class="menu-items-grid">
+        <button class="sheet-item" id="menu-btn-newtab">
+          <div class="sheet-icon">➕</div>
+          <span>Yeni Sekme</span>
+        </button>
+        <button class="sheet-item" id="menu-btn-private">
+          <div class="sheet-icon">🕵️</div>
+          <span>Gizli Sekme</span>
+        </button>
+        <button class="sheet-item" id="menu-btn-bookmarks">
+          <div class="sheet-icon">⭐</div>
+          <span>Yer İmleri</span>
+        </button>
+        <button class="sheet-item" id="menu-btn-history">
+          <div class="sheet-icon">🕒</div>
+          <span>Geçmiş</span>
+        </button>
+      </div>
+
+      <div class="sheet-divider"></div>
+
+      <div class="sheet-list">
+        <div class="sheet-list-item" id="toggle-adblock-item">
+          <div class="item-left">
+            <span class="item-icon">🛡️</span>
+            <div>
+              <div class="item-title">Reklam Engelleyici</div>
+              <div class="item-desc">Mobil reklamları ve izleyicileri engelle</div>
+            </div>
+          </div>
+          <label class="mobile-switch">
+            <input type="checkbox" id="switch-adblock" checked>
+            <span class="mobile-slider"></span>
+          </label>
+        </div>
+
+        <div class="sheet-list-item" id="toggle-darkmode-item">
+          <div class="item-left">
+            <span class="item-icon">🌙</span>
+            <div>
+              <div class="item-title">Karanlık Web Sayfaları</div>
+              <div class="item-desc">Tüm web sitelerini siyah AMOLED yap</div>
+            </div>
+          </div>
+          <label class="mobile-switch">
+            <input type="checkbox" id="switch-darkmode">
+            <span class="mobile-slider"></span>
+          </label>
+        </div>
+
+        <div class="sheet-list-item" id="toggle-desktop-item">
+          <div class="item-left">
+            <span class="item-icon">💻</span>
+            <div>
+              <div class="item-title">Masaüstü Sitesi İste</div>
+              <div class="item-desc">Web sayfalarını bilgisayar görünümünde aç</div>
+            </div>
+          </div>
+          <label class="mobile-switch">
+            <input type="checkbox" id="switch-desktop">
+            <span class="mobile-slider"></span>
+          </label>
+        </div>
+
+        <button class="sheet-action-row" id="btn-open-settings">
+          <span class="item-icon">⚙️</span>
+          <span>Tarayıcı Ayarları</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       5. BOOKMARKS & HISTORY MODAL
+       ========================================== -->
+  <div id="list-sheet-modal" class="hidden">
+    <div class="sheet-modal-header">
+      <h3 id="list-modal-title">Geçmiş</h3>
+      <div class="modal-header-actions">
+        <button id="btn-clear-list-modal" class="btn-text-danger">Temizle</button>
+        <button id="btn-close-list-modal" class="btn-text-close">Kapat</button>
+      </div>
+    </div>
+    <div id="list-modal-content"></div>
+  </div>
+
+  <!-- ==========================================
+       6. MOBILE BOTTOM NAVIGATION BAR
+       ========================================== -->
+  <nav id="mobile-bottom-nav">
+    <button id="nav-btn-back" class="nav-icon-btn" disabled title="Geri">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
+    </button>
+    
+    <button id="nav-btn-forward" class="nav-icon-btn" disabled title="İleri">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" fill="currentColor"/></svg>
+    </button>
+
+    <button id="nav-btn-home" class="nav-icon-btn" title="Ana Sayfa">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+    </button>
+
+    <button id="nav-btn-tabs" class="nav-icon-btn tab-counter-btn" title="Sekmeler">
+      <div id="tab-counter-badge">1</div>
+    </button>
+
+    <button id="nav-btn-menu" class="nav-icon-btn" title="Menü">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" fill="currentColor"/></svg>
+    </button>
+  </nav>
+
+  <!-- Mobile Toast Notification -->
+  <div id="mobile-toast" class="hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
