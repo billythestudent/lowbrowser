@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LowBrowser</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-purple">
+
+  <!-- A. TITLEBAR (Sekme Barı & Pencere Kontrolleri - 38px Yükseklik) -->
+  <div id="titlebar">
+    <div id="logo-area"><img src="logo.png" class="logo-icon" alt="Logo"> LowBrowser</div>
+    <div id="tabs-container"></div>
+    <button id="btn-new-tab" class="nav-btn" title="Yeni Sekme">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+    </button>
+    <button id="btn-new-private-tab" class="nav-btn" title="Yeni Gizli Sekme">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5zm2.07-7.75l-.9.92C11.45 11.9 11 12.5 11 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" fill="currentColor"/></svg>
+    </button>
+    <div class="spacer"></div>
+    <div id="window-controls">
+      <button id="btn-minimize" class="win-btn" title="Küçült">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M19 13H5v-2h14v2z" fill="currentColor"/></svg>
+      </button>
+      <button id="btn-maximize" class="win-btn" title="Ekranı Kapla">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M18 4H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H6V6h12v12z" fill="currentColor"/></svg>
+      </button>
+      <button id="btn-close" class="win-btn close-btn" title="Kapat">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- B. NAVIGATION BAR (Navigasyon Butonları & Adres Çubuğu) -->
+  <div id="navbar">
+    <button id="btn-back" class="nav-btn" disabled title="Geri">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
+    </button>
+    <button id="btn-forward" class="nav-btn" disabled title="İleri">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" fill="currentColor"/></svg>
+    </button>
+    <button id="btn-reload" class="nav-btn" title="Yenile">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/></svg>
+    </button>
+    <button id="btn-home" class="nav-btn" title="Ana Sayfa">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor"/></svg>
+    </button>
+    
+    <div id="address-bar-wrapper">
+      <button id="btn-security-shield" class="address-bar-icon" title="Güvenlik & Kalkan Paneli">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 10.91H6V11h6V6.09l6 5.91-6 5.91V12.91z" fill="currentColor"/></svg>
+      </button>
+      <input type="text" id="address-input" placeholder="Arama yap veya URL gir..." autocomplete="off">
+      <div id="suggestions-box" class="hidden"></div>
+      <div id="load-speed-badge" class="hidden" title="Sayfa Yüklenme Hızı">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 00-9 9 9 9 0 009 9 9 9 0 009-9 9 9 0 00-9-9zm0 16a7 7 0 110-14 7 7 0 010 14zm-1-8.5c0-.8.7-1.5 1.5-1.5s1.5.7 1.5 1.5a1.5 1.5 0 01-2.5 1.1l-2.7 2.7-1.4-1.4 2.7-2.7a1.5 1.5 0 01.9-1.2z" fill="currentColor"/></svg>
+        <span id="load-speed-text">0.00s</span>
+      </div>
+      <button id="btn-ping-test" class="address-bar-icon" title="Ağ Gecikmesini (Ping) Test Et">
+        <span id="ping-dot" style="display: inline-block; width: 6px; height: 6px; border-radius: 3px; background-color: #64748b; margin-right: 4px;"></span>
+        <span id="ping-text" style="font-size: 10px; font-weight: 600; color: var(--text-dim);">Ping</span>
+      </button>
+      <button id="btn-autofill-key" class="address-bar-icon hidden" title="Şifreyi Otomatik Doldur" style="color: #fbbf24; margin-right: 4px;">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <button id="btn-adblock" class="nav-btn" title="Reklam Engelleyici">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 10.91H6V11h6V6.09l6 5.91-6 5.91V12.91z" fill="currentColor"/></svg>
+    </button>
+    <button id="btn-tools-menu" class="nav-btn" title="Araçlar ve Özellikler">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z" fill="currentColor"/></svg>
+    </button>
+    <button id="btn-settings" class="nav-btn" title="Ayarlar">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z" fill="currentColor"/></svg>
+    </button>
+  </div>
+
+  <!-- B2. BOOKMARKS BAR (Yer İmleri Çubuğu) -->
+  <div id="bookmarks-bar">
+    <svg class="icon star-icon" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="currentColor"/></svg>
+    <div id="bookmarks-list"></div>
+  </div>
+
+  <!-- D. SECURITY SHIELD DROPDOWN PANEL (Popover) -->
+  <div id="shield-popover" class="hidden">
+    <div class="popover-section">
+      <div class="popover-title">GÜVENLİK DURUMU</div>
+      <div class="popover-value" id="shield-ssl-status">Sorgulanıyor...</div>
+    </div>
+    <div class="popover-section">
+      <div class="popover-title">REKLAM ENGELLEME</div>
+      <div class="popover-value" id="shield-ads-blocked">Bu sitede 0 reklam engellendi.</div>
+    </div>
+  </div>
+
+  <!-- F. DOWNLOADS POPUP PANEL -->
+  <div id="downloads-panel" class="hidden">
+    <div id="downloads-header">
+      <h4>Dosya İndirmeleri</h4>
+      <button id="btn-clear-downloads">Temizle</button>
+    </div>
+    <div id="downloads-list">
+      <div class="empty-downloads">Aktif indirme bulunmuyor.</div>
+    </div>
+  </div>
+
+  <!-- G. TAB VOLUME MIXER PANEL -->
+  <div id="volume-panel" class="hidden">
+    <div id="volume-header">
+      <h4>Ses Karıştırıcı</h4>
+    </div>
+    <div id="volume-list">
+      <div class="empty-volume">Ses çalan aktif sekme bulunmuyor.</div>
+    </div>
+  </div>
+
+  <!-- H. TOOLS MENU POPUPS PANEL -->
+  <div id="tools-menu-popover" class="hidden">
+    <div class="tools-grid">
+      <button class="tool-item" id="tool-btn-translate" title="Sayfayı Türkçe'ye Çevir">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" fill="currentColor"/></svg>
+        <span>Sayfayı Çevir</span>
+      </button>
+      <button class="tool-item" id="tool-btn-downloads" title="İndirmeler">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z" fill="currentColor"/></svg>
+        <span>İndirmeler</span>
+      </button>
+      <button class="tool-item" id="tool-btn-volume" title="Ses Karıştırıcı">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6zm-2 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="currentColor"/></svg>
+        <span>Ses Mikseri</span>
+      </button>
+      <button class="tool-item" id="tool-btn-darkmode" title="Zorunlu Karanlık Mod">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12.3 22h-.1c-5.5 0-10-4.5-10-10C2.2 6.8 6.5 2.5 11.7 2.2c.4 0 .7.2.9.5.2.3.1.7-.1.9-1.9 1.7-2.9 4.1-2.9 6.6 0 4.6 3.6 8.4 8.2 8.6.4 0 .7.2.8.5.2.3.1.7-.2.9-1.6.5-3.4.8-6.1.8zm-1.8-17.7c-3.6.8-6.3 4-6.3 7.7 0 4.4 3.6 8 8 8 .8 0 1.7-.1 2.5-.4-2.8-1.5-4.5-4.5-4.6-7.8 0-2.8 1.4-5.4 3.7-7-.3 0-.5-.1-.7-.1z" fill="currentColor"/></svg>
+        <span>Karanlık Mod</span>
+      </button>
+      <button class="tool-item" id="tool-btn-boost" title="RAM Turbo Boost">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12.5 2C11 3.5 9 7 9 10c0 .9.3 1.7.7 2.4l-3.3 3.3c-.6-.2-1.2-.4-1.9-.4H3.5L2 19l2.5 2.5L8 20v-1c0-.7-.2-1.3-.4-1.9l3.3-3.3c.7.4 1.5.7 2.4.7 3 0 6.5-2 8-3.5L21 6l-8.5-4zM16 10c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="currentColor"/></svg>
+        <span>RAM Temizle</span>
+      </button>
+      <button class="tool-item" id="tool-btn-notes" title="Hızlı Not Defteri">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" fill="currentColor"/></svg>
+        <span>Not Defteri</span>
+      </button>
+      <button class="tool-item" id="tool-btn-clipboard" title="Pano Geçmişi">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z" fill="currentColor"/></svg>
+        <span>Pano Geçmişi</span>
+      </button>
+      <button class="tool-item" id="tool-btn-history" title="Tarama Geçmişi">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" fill="currentColor"/></svg>
+        <span>Geçmiş</span>
+      </button>
+      <button class="tool-item" id="tool-btn-passwords" title="Şifre Yöneticisi">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/></svg>
+        <span>Şifreler</span>
+      </button>
+      <button class="tool-item" id="tool-btn-screenshot" title="Sayfa / Ekran Görüntüsü Yakala">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 15.2a3.2 3.2 0 100-6.4 3.2 3.2 0 000 6.4z" fill="currentColor"/><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" fill="currentColor"/></svg>
+        <span>Ekran Yakala</span>
+      </button>
+      <button class="tool-item" id="tool-btn-pip" title="Videoyu Köşeye Sabitle (Picture-in-Picture)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16.01H3V4.99h18v14.02z" fill="currentColor"/></svg>
+        <span>Video PiP</span>
+      </button>
+      <button class="tool-item" id="tool-btn-dns" title="Güvenli & Hızlı DNS (DoH - 1.1.1.1 / 8.8.8.8)">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z" fill="currentColor"/></svg>
+        <span>Güvenli DNS</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- C. CENTRAL CONTENT CONTAINER (İçerik Paneli & Ayarlar Yan Paneli) -->
+  <div id="app-body">
+    <!-- Sol Not Defteri Paneli -->
+    <div id="notes-panel" class="hidden">
+      <div id="notes-header">
+        <h3>Hızlı Notlar</h3>
+        <button id="btn-close-notes" title="Notları Kapat">✕</button>
+      </div>
+      <textarea id="notes-textarea" placeholder="Buraya notlarınızı yazın, otomatik kaydedilir..."></textarea>
+    </div>
+
+    <!-- Sol Pano Geçmişi Paneli -->
+    <div id="clipboard-panel" class="hidden">
+      <div id="clipboard-header">
+        <h3>Pano Geçmişi</h3>
+        <button id="btn-close-clipboard" title="Panoyu Kapat">✕</button>
+      </div>
+      <div id="clipboard-list">
+        <div class="empty-clipboard">Kopyalama geçmişiniz boş.</div>
+      </div>
+    </div>
+
+    <!-- Sol Geçmiş Paneli -->
+    <div id="history-panel" class="hidden">
+      <div id="history-header">
+        <h3>Tarama Geçmişi</h3>
+        <button id="btn-clear-history">Temizle</button>
+        <button id="btn-close-history" title="Kapat">✕</button>
+      </div>
+      <div id="history-list">
+        <div class="empty-history">Henüz tarama geçmişi bulunmuyor.</div>
+      </div>
+    </div>
+
+    <!-- Sol Şifre Paneli -->
+    <div id="passwords-panel" class="hidden">
+      <div id="passwords-header">
+        <h3>Şifre Yöneticisi</h3>
+        <button id="btn-close-passwords" title="Kapat">✕</button>
+      </div>
+      
+      <!-- Yeni Şifre Ekleme Formu -->
+      <div id="password-add-form">
+        <input type="text" id="pass-add-url" placeholder="Site Adresi (örn: youtube.com)">
+        <input type="text" id="pass-add-user" placeholder="Kullanıcı Adı / E-posta">
+        <input type="password" id="pass-add-word" placeholder="Şifre">
+        <button id="btn-save-password">Kaydet</button>
+      </div>
+
+      <div id="passwords-list">
+        <div class="empty-passwords">Kaydedilmiş şifre bulunmuyor.</div>
+      </div>
+    </div>
+
+    <!-- Webviews stack (Web siteleri buraya gömülür) -->
+    <div id="webviews-container"></div>
+
+    <!-- NATIVE START PAGE (Chromium renderer harcamayan hafif arama sayfası) -->
+    <div id="start-page" class="hidden">
+      <div id="start-page-content">
+        <div id="start-logo" style="display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <img src="logo.png" alt="LowBrowser Logo">
+          <span style="font-size: 38px; font-weight: 700; color: #ffffff; letter-spacing: -0.8px;">LowBrowser</span>
+        </div>
+        <div id="start-subtitle">Ultra-Hafif, Akıllı Bellek Yönetimli Tarayıcı</div>
+        <div id="start-private-label" class="hidden">Gizli Tarama Modundasınız (Çerezler ve arama geçmişiniz bu sekmede kaydedilmez)</div>
+        
+        <!-- Search bar -->
+        <div id="start-search-box">
+          <input type="text" id="start-search-input" placeholder="Arama yap veya URL gir...">
+          <button id="btn-start-search">Ara</button>
+        </div>
+
+        <!-- Gamer themed speed dials -->
+        <div id="speed-dials"></div>
+      </div>
+      <!-- Başlangıç Sayfası Arka Plan Değiştirici Butonu (Bottom Right) -->
+      <button id="btn-newtab-bg" title="Arka Plan Stilini Değiştir">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <!-- SETTINGS & THEME STUDIO FULL DASHBOARD -->
+    <div id="settings-panel">
+      <div id="studio-header">
+        <div id="studio-header-title">
+          <div class="studio-badge">LowBrowser</div>
+          <h2>Ayarlar & Tema Stüdyosu</h2>
+        </div>
+        <button id="btn-close-settings" title="Stüdyoyu Kapat (ESC)">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+        </button>
+      </div>
+
+      <div id="studio-body">
+        <!-- Sol Navigasyon Sekmeleri -->
+        <div id="studio-sidebar">
+          <button class="studio-nav-btn active" data-target="sec-theme">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 000 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="currentColor"/></svg>
+            <span>Tema Stüdyosu</span>
+          </button>
+          <button class="studio-nav-btn" data-target="sec-perf">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z" fill="currentColor"/></svg>
+            <span>Performans & RAM</span>
+          </button>
+          <button class="studio-nav-btn" data-target="sec-search">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+            <span>Arama & Karanlık Mod</span>
+          </button>
+          <button class="studio-nav-btn" data-target="sec-dns">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1 6h2v2h-2V7zm0 4h2v6h-2v-6z" fill="currentColor"/></svg>
+            <span>Ağ & Güvenli DNS</span>
+          </button>
+        </div>
+
+        <!-- Sağ İçerik Alanı -->
+        <div id="studio-content">
+          
+          <!-- BÖLÜM 1: TEMA STÜDYOSU -->
+          <div class="studio-tab-content active" id="sec-theme">
+            
+            <!-- Hazır Presetler -->
+            <div class="studio-card">
+              <h3>🎨 Hazır Temalar</h3>
+              <p class="studio-card-desc">LowBrowser için özel hazırlanmış lüks renk şablonları.</p>
+              <div id="theme-selectors">
+                <button class="theme-btn theme-adaptive" data-theme="adaptive" title="Dinamik Renk Modu (Site Renklerine Uyum Sağlar)"></button>
+                <button class="theme-btn theme-purple" data-theme="purple" title="Neon Mor"></button>
+                <button class="theme-btn theme-blue" data-theme="blue" title="Okyanus Mavisi"></button>
+                <button class="theme-btn theme-green" data-theme="green" title="Zümrüt Yeşili"></button>
+                <button class="theme-btn theme-orange" data-theme="orange" title="Gün Batımı Turuncusu"></button>
+                <button class="theme-btn theme-pink" data-theme="pink" title="Siber Fuşya"></button>
+              </div>
+            </div>
+
+            <!-- Kendi Özel Temanı Oluştur -->
+            <div class="studio-card">
+              <h3>✨ Kendi Özel Temanı Tasarla</h3>
+              <p class="studio-card-desc">Renkleri dilediğiniz gibi karıştırın, canlı önizlemede anında izleyin ve kendi temanızı kaydedin.</p>
+              
+              <div class="custom-theme-studio-grid">
+                <!-- Sol: Renk Seçiciler -->
+                <div class="theme-pickers-column">
+                  <div class="color-picker-row">
+                    <label>Vurgu (Accent) Rengi:</label>
+                    <div class="picker-wrapper">
+                      <input type="color" id="picker-accent" value="#7f00ff">
+                      <span class="color-hex-badge" id="hex-accent">#7f00ff</span>
+                    </div>
+                  </div>
+                  <div class="color-picker-row">
+                    <label>Ana Arka Plan:</label>
+                    <div class="picker-wrapper">
+                      <input type="color" id="picker-bg-primary" value="#07080a">
+                      <span class="color-hex-badge" id="hex-bg-primary">#07080a</span>
+                    </div>
+                  </div>
+                  <div class="color-picker-row">
+                    <label>Üst Bar & Paneller:</label>
+                    <div class="picker-wrapper">
+                      <input type="color" id="picker-bg-secondary" value="#0c0d12">
+                      <span class="color-hex-badge" id="hex-bg-secondary">#0c0d12</span>
+                    </div>
+                  </div>
+                  <div class="color-picker-row">
+                    <label>Adres Çubuğu & Girişler:</label>
+                    <div class="picker-wrapper">
+                      <input type="color" id="picker-bg-input" value="#151720">
+                      <span class="color-hex-badge" id="hex-bg-input">#151720</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Tema İsimlendirme & Kaydetme -->
+                  <div class="theme-save-box">
+                    <input type="text" id="input-custom-theme-name" placeholder="Temanıza isim verin (örn: Gece Avcısı)">
+                    <div class="theme-action-buttons">
+                      <button id="btn-apply-custom-theme">Canlı Uygula</button>
+                      <button id="btn-save-custom-theme" class="btn-primary">Temayı Kaydet</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sağ: Canlı Tarayıcı Maket Önizlemesi -->
+                <div class="theme-preview-column">
+                  <div class="preview-label">Canlı Tarayıcı Önizlemesi</div>
+                  <div id="mock-browser-window">
+                    <div id="mock-titlebar">
+                      <div class="mock-dots"><span></span><span></span><span></span></div>
+                      <div id="mock-tab" class="mock-tab-active">Aktif Sekme</div>
+                      <div id="mock-tab-inactive">Diğer Sekme</div>
+                    </div>
+                    <div id="mock-navbar">
+                      <div class="mock-nav-btn">‹</div>
+                      <div class="mock-nav-btn">›</div>
+                      <div id="mock-address-bar">lowbrowser://start</div>
+                      <div id="mock-action-btn">Ara</div>
+                    </div>
+                    <div id="mock-page-body">
+                      <div id="mock-logo">⚡</div>
+                      <div id="mock-text">Özel Tasarladığınız Tema Canlı Olarak Burada!</div>
+                      <div id="mock-accent-pill">Harika Görünüyor</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kaydedilen Temalarım Kütüphanesi -->
+            <div class="studio-card">
+              <h3>💾 Kayıtlı Temalarım</h3>
+              <p class="studio-card-desc">Daha önce kaydettiğiniz özel temalar. Tek tıkla geri yükleyebilir veya silebilirsiniz.</p>
+              <div id="saved-custom-themes-list">
+                <div class="empty-themes-msg">Henüz kaydedilmiş özel bir temanız bulunmuyor.</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- BÖLÜM 2: PERFORMANS & RAM -->
+          <div class="studio-tab-content" id="sec-perf">
+            <div class="studio-card">
+              <h3>⚡ Canlı Sistem Performansı</h3>
+              <p class="studio-card-desc">Tarayıcının anlık bellek ve işlemci tüketimi.</p>
+              <div class="perf-metric">
+                <div class="metric-label" id="ram-usage-text">Tarayıcı RAM Kullanımı: Hesaplanıyor...</div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="ram-progress"></div></div>
+              </div>
+              <div class="perf-metric">
+                <div class="metric-label" id="cpu-usage-text">Tarayıcı CPU Kullanımı: Hesaplanıyor...</div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="cpu-progress"></div></div>
+              </div>
+              <div class="perf-graph-container" style="margin-top: 16px;">
+                <canvas id="perf-graph" width="500" height="120"></canvas>
+              </div>
+            </div>
+
+            <div class="studio-card">
+              <h3>💤 Akıllı RAM Limitleyici (Sekme Dondurucu)</h3>
+              <p class="studio-card-desc">Arka planda kullanılmayan boş sekmelerin RAM tüketimini otomatik dondurur. Müzik çalan veya indirme yapan sekmeler korunur.</p>
+              <div class="cards-radio-group">
+                <label class="card-radio-item">
+                  <input type="radio" name="sleep-mode" value="aggressive" checked>
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">🚀 Agresif Mod (30 Saniye)</span>
+                    <span class="card-radio-sub">Maksimum RAM tasarrufu için boş sekmeleri hızla uyutur.</span>
+                  </div>
+                </label>
+                <label class="card-radio-item">
+                  <input type="radio" name="sleep-mode" value="balanced">
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">⚖️ Dengeli Mod (2 Dakika)</span>
+                    <span class="card-radio-sub">Standart çoklu sekme gezintisi için ideal uyku süresi.</span>
+                  </div>
+                </label>
+                <label class="card-radio-item">
+                  <input type="radio" name="sleep-mode" value="never">
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">🛑 Kapalı (Hiçbir Zaman)</span>
+                    <span class="card-radio-sub">Sekmeleri dondurmaz, tüm sekmeler sürekli aktif kalır.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- BÖLÜM 3: ARAMA & KARANLIK MOD -->
+          <div class="studio-tab-content" id="sec-search">
+            <div class="studio-card">
+              <h3>🔍 Varsayılan Arama Motoru</h3>
+              <p class="studio-card-desc">Adres çubuğuna yazılan aramaların yönlendirileceği ana motor.</p>
+              <div class="cards-radio-group">
+                <label class="card-radio-item">
+                  <input type="radio" name="search-engine" value="google" checked>
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">Google</span>
+                    <span class="card-radio-sub">En kapsamlı web arama sonuçları.</span>
+                  </div>
+                </label>
+                <label class="card-radio-item">
+                  <input type="radio" name="search-engine" value="duckduckgo">
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">DuckDuckGo</span>
+                    <span class="card-radio-sub">Gizlilik odaklı, kullanıcıyı takip etmeyen arama motoru.</span>
+                  </div>
+                </label>
+                <label class="card-radio-item">
+                  <input type="radio" name="search-engine" value="yandex">
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">Yandex</span>
+                    <span class="card-radio-sub">Bölgesel ve görsel arama optimizasyonu.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="studio-card">
+              <h3>🌙 Zorunlu Karanlık Mod Ayarları</h3>
+              <p class="studio-card-desc">Beyaz arka planlı siteleri koyu temaya çevirirken uygulanacak filtre güçleri.</p>
+              <div class="slider-item" style="margin-bottom: 14px;">
+                <div class="slider-labels"><span>Kontrast Dengesi:</span><span id="label-contrast">100%</span></div>
+                <input type="range" id="slider-contrast" min="50" max="150" value="100">
+              </div>
+              <div class="slider-item">
+                <div class="slider-labels"><span>Parlaklık Dengesi:</span><span id="label-brightness">100%</span></div>
+                <input type="range" id="slider-brightness" min="50" max="150" value="100">
+              </div>
+            </div>
+          <!-- BÖLÜM 4: AĞ & GÜVENLİ DNS -->
+          <div class="studio-tab-content" id="sec-dns">
+            <div class="studio-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h3>⚡ Güvenli & Hızlı DNS (DoH)</h3>
+                  <p class="studio-card-desc">İnternet sorgularınızı şifreleyerek ISS takibini engeller, erişim engellerini aşar ve sitelerin daha hızlı yüklenmesini sağlar.</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="switch-secure-dns" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div id="dns-status-badge">
+                <span id="dns-status-dot">●</span>
+                <span id="dns-status-text">Güvenli DNS Aktif: Cloudflare (1.1.1.1) ile şifreleniyor.</span>
+              </div>
+            </div>
+
+            <div class="studio-card">
+              <h3>🌐 DNS Sağlayıcısı Seçin</h3>
+              <p class="studio-card-desc">Kullanmak istediğiniz şifreli DNS sunucusunu belirleyin.</p>
+              <div class="cards-radio-group">
+                <label class="card-radio-item">
+                  <input type="radio" name="dns-provider" value="cloudflare" checked>
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">⚡ Cloudflare DNS (1.1.1.1)</span>
+                    <span class="card-radio-sub">Dünyanın en hızlı, sıfır log tutan gizlilik DNS'i.</span>
+                  </div>
+                </label>
+                <label class="card-radio-item">
+                  <input type="radio" name="dns-provider" value="google">
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">🌐 Google Public DNS (8.8.8.8)</span>
+                    <span class="card-radio-sub">Küresel çapta en kararlı ve hızlı çözümleme ağı.</span>
+                  </div>
+                </label>
+                <label class="card-radio-item">
+                  <input type="radio" name="dns-provider" value="quad9">
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">🛡️ Quad9 (9.9.9.9)</span>
+                    <span class="card-radio-sub">Zararlı yazılım ve oltalama sitelerine karşı otomatik koruma.</span>
+                  </div>
+                </label>
+                <label class="card-radio-item">
+                  <input type="radio" name="dns-provider" value="adguard">
+                  <div class="card-radio-content">
+                    <span class="card-radio-title">🚫 AdGuard DNS</span>
+                    <span class="card-radio-sub">DNS seviyesinde reklam, izleyici ve takipçileri engeller.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- E. COMMAND PALETTE MODAL OVERLAY -->
+  <div id="command-palette" class="hidden">
+    <div id="palette-box">
+      <input type="text" id="palette-input" placeholder="Sekme arayın veya komut yazın... (/boost, /dark, /private)">
+      <div id="palette-results"></div>
+    </div>
+  </div>
+
+  <!-- F. ADD SPEED DIAL MODAL OVERLAY -->
+  <div id="modal-add-dial" class="hidden">
+    <div id="add-dial-box">
+      <h3>Hızlı Erişim Ekle</h3>
+      <input type="text" id="dial-name-input" placeholder="Site Adı (örn: Google)">
+      <input type="text" id="dial-url-input" placeholder="URL (örn: google.com)">
+      <div class="modal-buttons">
+        <button id="btn-cancel-dial">İptal</button>
+        <button id="btn-confirm-dial">Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- G. PROFESYONEL SAĞ TIK BAĞLAM MENÜSÜ (Webview Context Menu) -->
+  <div id="webview-context-menu" class="hidden custom-context-menu">
+    <div class="ctx-item" id="ctx-nav-back">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/></svg>
+      <span>Geri</span>
+      <span class="ctx-shortcut">Alt + ←</span>
+    </div>
+    <div class="ctx-item" id="ctx-nav-forward">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z" fill="currentColor"/></svg>
+      <span>İleri</span>
+      <span class="ctx-shortcut">Alt + →</span>
+    </div>
+    <div class="ctx-item" id="ctx-nav-reload">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/></svg>
+      <span>Yeniden Yükle</span>
+      <span class="ctx-shortcut">Ctrl + R</span>
+    </div>
+    <div class="ctx-divider"></div>
+    <div class="ctx-item" id="ctx-open-link-tab">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z" fill="currentColor"/></svg>
+      <span>Bağlantıyı Yeni Sekmede Aç</span>
+    </div>
+    <div class="ctx-item" id="ctx-copy-link">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" fill="currentColor"/></svg>
+      <span>Bağlantı Adresini Kopyala</span>
+    </div>
+    <div class="ctx-divider"></div>
+    <div class="ctx-item" id="ctx-view-source">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" fill="currentColor"/></svg>
+      <span>Sayfa Kaynağını Görüntüle</span>
+      <span class="ctx-shortcut">Ctrl + U</span>
+    </div>
+    <div class="ctx-item" id="ctx-inspect-element">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-5 14H4v-4h11v4zm0-5H4V9h11v4zm5 5h-4V9h4v9z" fill="currentColor"/></svg>
+      <span>İncele (DevTools)</span>
+      <span class="ctx-shortcut">F12</span>
+    </div>
+  </div>
+
+  <!-- H. SEKME SAĞ TIK BAĞLAM MENÜSÜ (Tab Context Menu) -->
+  <div id="tab-context-menu" class="hidden custom-context-menu">
+    <div class="ctx-item" id="ctx-tab-reload">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" fill="currentColor"/></svg>
+      <span>Yenile</span>
+    </div>
+    <div class="ctx-item" id="ctx-tab-pin">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z" fill="currentColor"/></svg>
+      <span id="ctx-tab-pin-text">Sekmeyi Sabitle</span>
+    </div>
+    <div class="ctx-item" id="ctx-tab-mute">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" fill="currentColor"/></svg>
+      <span id="ctx-tab-mute-text">Sekmeyi Sustur</span>
+    </div>
+    <div class="ctx-item" id="ctx-tab-duplicate">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/></svg>
+      <span>Sekmeyi Çoğalt</span>
+    </div>
+    <div class="ctx-divider"></div>
+    <div class="ctx-item ctx-danger" id="ctx-tab-close">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+      <span>Sekmeyi Kapat</span>
+      <span class="ctx-shortcut">Ctrl + W</span>
+    </div>
+  </div>
+
+  <!-- Screenshot Flash Effect Overlay -->
+  <div id="screenshot-flash-overlay"></div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

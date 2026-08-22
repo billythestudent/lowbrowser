@@ -1,0 +1,46 @@
+{
+  "name": "low-browser",
+  "version": "1.0.0",
+  "description": "Ultra-lightweight, smart memory-managed custom web browser",
+  "author": "billythestudent",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/billythestudent/lowbrowser.git"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "node build.js",
+    "release": "electron-builder --publish always"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.billythestudent.lowbrowser",
+    "productName": "LowBrowser",
+    "asar": true,
+    "publish": {
+      "provider": "github",
+      "owner": "billythestudent",
+      "repo": "lowbrowser",
+      "releaseType": "release"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "artifactName": "LowBrowser-Setup.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true,
+      "artifactName": "LowBrowser-Setup.exe"
+    }
+  }
+}
